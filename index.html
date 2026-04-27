@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>デンタルトーク</title>
+  <style>
+    :root {
+      --bg: #eef8fb;
+      --card: #ffffff;
+      --main: #1598b8;
+      --main-dark: #0c6f88;
+      --text: #1f2a33;
+      --muted: #65717a;
+      --danger: #e45656;
+      --border: #d8edf2;
+      --shadow: 0 8px 24px rgba(19, 111, 136, 0.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 14px 2px 10px;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0;
+      letter-spacing: .03em;
+      color: var(--main-dark);
+    }
+    .sub { font-size: 13px; color: var(--muted); }
+    .display-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: sticky;
+      top: env(safe-area-inset-top);
+      z-index: 5;
+    }
+    #sentence {
+      width: 100%;
+      min-height: 108px;
+      border: 0;
+      resize: none;
+      outline: none;
+      font-size: 30px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: var(--text);
+      background: #fff;
+      padding: 6px;
+    }
+    #sentence::placeholder { color: #9aa7ad; font-weight: 600; }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 10px;
+      font-size: 17px;
+      font-weight: 700;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 2px 0 rgba(0,0,0,.06);
+      touch-action: manipulation;
+    }
+    button:active { transform: translateY(1px); }
+    .primary { background: var(--main); color: #fff; }
+    .danger { background: var(--danger); color: #fff; }
+    .light { background: #e2f6fb; color: var(--main-dark); }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 14px 0 8px;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      white-space: nowrap;
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--main-dark);
+      border: 2px solid var(--border);
+      box-shadow: none;
+    }
+    .tab.active {
+      background: var(--main);
+      color: #fff;
+      border-color: var(--main);
+    }
+    .phrase-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 0 12px;
+      scrollbar-width: none;
+    }
+    .phrase-row::-webkit-scrollbar { display: none; }
+    .phrase {
+      min-width: 230px;
+      text-align: left;
+      background: #fff8db;
+      color: #604d00;
+      box-shadow: none;
+      border: 1px solid #f3df8a;
+      font-size: 16px;
+    }
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-bottom: 100px;
+    }
+    .word {
+      min-height: 62px;
+      font-size: 20px;
+      border: 2px solid var(--border);
+      box-shadow: 0 3px 0 rgba(21,152,184,.12);
+    }
+    .add-fab {
+      position: fixed;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--main);
+      color: white;
+      font-size: 34px;
+      box-shadow: 0 10px 30px rgba(21,152,184,.35);
+      z-index: 20;
+    }
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 30;
+      align-items: flex-end;
+    }
+    .modal {
+      width: 100%;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 18px;
+      box-shadow: 0 -10px 40px rgba(0,0,0,.2);
+    }
+    .modal h2 { margin: 0 0 12px; font-size: 22px; }
+    input, select {
+      width: 100%;
+      font-size: 20px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 8px 2px 0;
+    }
+    @media (min-width: 680px) {
+      body { max-width: 820px; margin: 0 auto; }
+      .word-grid { grid-template-columns: repeat(3, 1fr); }
+      #sentence { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>🦷 デンタルトーク</h1>
+      <div class="sub">歯科用・見せて伝える会話ボード</div>
+    </div>
+  </header>
+
+  <section class="display-card">
+    <textarea id="sentence" placeholder="ここに文章ができます"></textarea>
+    <div class="controls">
+      <button class="light" id="spaceBtn">空白</button>
+      <button class="light" id="backBtn">一つ戻す</button>
+      <button class="danger" id="clearBtn">全部消す</button>
+    </div>
+    <div class="hint">単語ボタンを押すと、上の大きな文字に追加されます。</div>
+  </section>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <section class="phrase-row" id="phrases"></section>
+  <main class="word-grid" id="wordGrid"></main>
+
+  <button class="add-fab" id="openAdd">＋</button>
+
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <h2>単語を追加</h2>
+      <input id="newWord" placeholder="追加する言葉" />
+      <select id="newCategory"></select>
+      <div class="modal-actions">
+        <button class="light" id="cancelAdd">やめる</button>
+        <button class="primary" id="saveAdd">保存</button>
+      </div>
+      <div class="hint">保存した言葉は、この端末に残ります。</div>
+    </div>
+  </div>
+
+<script>
+const defaultData = {
+  "あいさつ": ["こんにちは", "お名前を教えてください", "今日はどうされましたか？", "よろしくお願いします", "お疲れさまでした"],
+  "症状": ["痛い", "少し痛い", "しみる", "腫れている", "出血がある", "違和感がある", "いつからですか？"],
+  "部位": ["上", "下", "右", "左", "前歯", "奥歯", "ここ", "この歯", "右上", "左上", "右下", "左下"],
+  "確認": ["大丈夫ですか？", "痛いですか？", "しみますか？", "どのくらい痛いですか？", "気分は悪くないですか？"],
+  "指示": ["口を開けてください", "もう少し開けてください", "閉じてください", "楽にしてください", "鼻で呼吸してください", "力を抜いてください", "かまないでください"],
+  "注意・安心": ["痛かったら手を上げてください", "少し音がします", "水が出ます", "すぐ終わります", "大丈夫ですよ", "少し待ってください"],
+  "処置": ["レントゲンを撮ります", "麻酔をします", "少しチクッとします", "削ります", "クリーニングします", "お薬を塗ります", "型を取ります"],
+  "行動": ["うがいしてください", "ティッシュどうぞ", "こちらへどうぞ", "椅子を倒します", "椅子を起こします"],
+  "終了・次回": ["終わりました", "今日はここまでです", "次回の予約を取ります", "お会計です", "お大事にしてください"]
+};
+const fixedPhrases = [
+  "痛かったら手を上げてください",
+  "今から水が出ます",
+  "少し音がします",
+  "口をゆすいでください",
+  "今日はここまでです",
+  "次回の予約を取ります"
+];
+let data = JSON.parse(localStorage.getItem("dentalTalkWords") || "null") || defaultData;
+let currentCategory = Object.keys(data)[0];
+const sentence = document.getElementById("sentence");
+const tabs = document.getElementById("tabs");
+const wordGrid = document.getElementById("wordGrid");
+const phrases = document.getElementById("phrases");
+const modalBg = document.getElementById("modalBg");
+const newWord = document.getElementById("newWord");
+const newCategory = document.getElementById("newCategory");
+function saveData(){ localStorage.setItem("dentalTalkWords", JSON.stringify(data)); }
+function addText(text){
+  const now = sentence.value.trim();
+  sentence.value = now ? now + " " + text : text;
+  sentence.focus();
+}
+function renderTabs(){
+  tabs.innerHTML = "";
+  Object.keys(data).forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = "tab" + (cat === currentCategory ? " active" : "");
+    btn.textContent = cat;
+    btn.onclick = () => { currentCategory = cat; renderTabs(); renderWords(); };
+    tabs.appendChild(btn);
+  });
+  newCategory.innerHTML = "";
+  Object.keys(data).forEach(cat => {
+    const op = document.createElement("option");
+    op.value = cat;
+    op.textContent = cat;
+    newCategory.appendChild(op);
+  });
+}
+function renderWords(){
+  wordGrid.innerHTML = "";
+  (data[currentCategory] || []).forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "word";
+    btn.textContent = word;
+    btn.onclick = () => addText(word);
+    wordGrid.appendChild(btn);
+  });
+}
+function renderPhrases(){
+  phrases.innerHTML = "";
+  fixedPhrases.forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "phrase";
+    btn.textContent = p;
+    btn.onclick = () => { sentence.value = p; };
+    phrases.appendChild(btn);
+  });
+}
+document.getElementById("clearBtn").onclick = () => { sentence.value = ""; };
+document.getElementById("spaceBtn").onclick = () => { sentence.value += " "; sentence.focus(); };
+document.getElementById("backBtn").onclick = () => {
+  sentence.value = sentence.value.trim().split(/\s+/).slice(0, -1).join(" ");
+};
+document.getElementById("openAdd").onclick = () => {
+  newWord.value = "";
+  newCategory.value = currentCategory;
+  modalBg.style.display = "flex";
+  setTimeout(()=>newWord.focus(), 50);
+};
+document.getElementById("cancelAdd").onclick = () => { modalBg.style.display = "none"; };
+modalBg.onclick = (e) => { if (e.target === modalBg) modalBg.style.display = "none"; };
+document.getElementById("saveAdd").onclick = () => {
+  const word = newWord.value.trim();
+  const cat = newCategory.value;
+  if (!word) return;
+  if (!data[cat]) data[cat] = [];
+  data[cat].push(word);
+  saveData();
+  currentCategory = cat;
+  modalBg.style.display = "none";
+  renderTabs();
+  renderWords();
+};
+renderTabs();
+renderPhrases();
+renderWords();
+</script>
+</body>
+</html>
