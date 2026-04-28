@@ -10,17 +10,17 @@
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:#eef9fb;color:var(--text);}
   header{position:sticky;top:0;z-index:10;background:#fff;padding:14px 16px 10px;border-bottom:1px solid #dcebef;box-shadow:0 2px 10px rgba(0,0,0,.04)}
   h1{margin:0;font-size:22px;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
-  .screen{margin-top:10px;background:#fff;border:3px solid #bfe8ef;border-radius:16px;min-height:118px;padding:16px;font-size:32px;line-height:1.45;font-weight:700;word-break:break-word;box-shadow: inset 0 0 0 1px #fff;}
+  .screen{margin-top:10px;background:#fff;border:3px solid #bfe8ef;border-radius:18px;min-height:260px;padding:22px;font-size:40px;line-height:1.35;font-weight:800;word-break:break-word;white-space:pre-wrap;box-shadow: inset 0 0 0 1px #fff;}
   .placeholder{color:#91a3aa;font-weight:600}
-  .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-  button{font-family:inherit;border:none;border-radius:14px;padding:13px 12px;font-size:18px;font-weight:700;background:#fff;box-shadow:0 2px 8px rgba(30,80,90,.08);color:var(--text)}
+  .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+  button{font-family:inherit;border:none;border-radius:16px;padding:15px 12px;font-size:19px;font-weight:800;background:#fff;box-shadow:0 2px 8px rgba(30,80,90,.08);color:var(--text)}
   button:active{transform:scale(.98);opacity:.85}
   .primary{background:var(--main);color:#fff}.danger{background:var(--danger);color:#fff}.light{background:#e7f5f8;color:#087c94}
-  main{padding:12px 12px 80px}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:204px;background:#eef9fb;z-index:8}.tab{white-space:nowrap;padding:10px 14px;border-radius:999px;background:#fff;font-size:16px;box-shadow:none;border:1px solid #dcebef}.tab.active{background:var(--main);color:white;border-color:var(--main)}
+  main{padding:12px 12px 90px}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:390px;background:#eef9fb;z-index:8}.tab{white-space:nowrap;padding:10px 14px;border-radius:999px;background:#fff;font-size:16px;box-shadow:none;border:1px solid #dcebef}.tab.active{background:var(--main);color:white;border-color:var(--main)}
   .section-title{font-size:18px;font-weight:800;margin:10px 4px;color:#31515b;display:flex;justify-content:space-between;align-items:center}.hint{font-size:13px;color:#6e858d;font-weight:600}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.word{min-height:54px;font-size:19px;line-height:1.25;background:#fff;border:1px solid #dcebef;text-align:center}.phrase{grid-column:span 2;text-align:left;background:#fffdf6;border-color:#f2dfb1}.fav{border:2px solid #74d4e5;background:#f6feff}
   .add-panel{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #dcebef;padding:10px 12px;box-shadow:0 -4px 14px rgba(0,0,0,.08);z-index:20}.add-row{display:grid;grid-template-columns:1fr 110px;gap:8px}input,select{font-family:inherit;font-size:18px;border:2px solid #cfe7ec;border-radius:12px;padding:12px;background:#fff}.small-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.reset{font-size:14px;padding:10px;background:#f2f2f2;color:#59676b}
-  @media (min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phrase{grid-column:span 3}.screen{font-size:40px}}
+  @media (min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phrase{grid-column:span 3}.screen{font-size:48px;min-height:300px}}
 </style>
 </head>
 <body>
@@ -28,9 +28,9 @@
   <h1>🦷 デンタルトーク</h1>
   <div id="screen" class="screen"><span class="placeholder">ここに文章ができます</span></div>
   <div class="actions">
+    <button class="light" onclick="addSpace()">空白</button>
     <button class="light" onclick="undoText()">一つ戻す</button>
-    <button class="danger" onclick="clearText()">全消し</button>
-    <button class="primary" onclick="copyText()">コピー</button>
+    <button class="danger" onclick="clearText()">全部消す</button>
   </div>
 </header>
 <main>
@@ -77,9 +77,19 @@ function renderWords(){
   const grid=document.getElementById('wordGrid'); grid.innerHTML='';
   sortedWords(currentCategory).forEach(word=>{ const b=document.createElement('button'); const c=counts[keyFor(currentCategory,word)]||0; b.className='word'+(c>=3?' fav':'')+(word.length>9?' phrase':''); b.textContent=word; b.onclick=()=>appendWord(word); grid.appendChild(b); });
 }
-function renderScreen(){ screen.innerHTML = textParts.length ? textParts.join('') : '<span class="placeholder">ここに文章ができます</span>'; }
+function renderScreen(){ screen.textContent = textParts.length ? textParts.join('') : ''; if(!textParts.length){ screen.innerHTML = '<span class="placeholder">ここに文章ができます</span>'; } }
 function render(){ renderTabs(); renderWords(); renderScreen(); }
-function appendWord(word){ textParts.push(word); const k=keyFor(currentCategory,word); counts[k]=(counts[k]||0)+1; save(); render(); }
+
+function currentText(){ return textParts.join(''); }
+function isSentence(word){ return word.length >= 7 || /[。？！?!]$/.test(word) || /(ください|お願いします|します|ですか|です|ました|ます)$/.test(word); }
+function appendWord(word){
+  if(textParts.length && isSentence(word) && !currentText().endsWith('\n')) textParts.push('\n');
+  textParts.push(word);
+  const k=keyFor(currentCategory,word); counts[k]=(counts[k]||0)+1;
+  save(); render();
+}
+function addSpace(){ textParts.push('　'); renderScreen(); }
+
 function clearText(){ textParts=[]; renderScreen(); }
 function undoText(){ textParts.pop(); renderScreen(); }
 function addWord(){ const input=document.getElementById('newWord'); const word=input.value.trim(); const cat=document.getElementById('newCategory').value; if(!word) return; if(!data[cat].includes(word)) data[cat].push(word); input.value=''; save(); currentCategory=cat; render(); }
