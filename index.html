@@ -2,52 +2,82 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>デンタルトーク</title>
 <style>
-  :root{--main:#0f8fa8;--sub:#f4fbfd;--text:#14212b;--danger:#e85a5a;--gray:#f7f9fa;}
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:#f7fbfc;color:var(--text);}
-  header{position:sticky;top:0;z-index:10;background:#fff;padding:12px 14px 10px;border-bottom:1px solid #e6eef1;box-shadow:none}
-  h1{margin:0;font-size:22px;letter-spacing:.04em;display:flex;align-items:center;gap:8px;color:#0f6f82}
-  .screen{margin-top:10px;background:#fff;border:2px solid #d9eef3;border-radius:16px;min-height:300px;padding:24px 20px;font-size:40px;line-height:1.38;font-weight:800;word-break:break-word;white-space:pre-wrap;box-shadow:none;}
-  .placeholder{color:#91a3aa;font-weight:600}
-  .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-  button{font-family:inherit;border:1px solid #dbe8ec;border-radius:12px;padding:12px 10px;font-size:18px;font-weight:800;background:#fff;box-shadow:none;color:var(--text)}
-  button:active{transform:scale(.98);opacity:.85}
-  .primary{background:var(--main);color:#fff;border-color:var(--main)}.danger{background:#fff;color:#d94545;border:2px solid #f0b0b0}.light{background:#fff;color:#0f6f82;border:1px solid #dbe8ec}
-  main{padding:10px 12px 88px}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:430px;background:#f7fbfc;z-index:8}.tab{white-space:nowrap;padding:9px 13px;border-radius:999px;background:#fff;font-size:16px;box-shadow:none;border:1px solid #dbe8ec}.tab.active{background:var(--main);color:white;border-color:var(--main)}
-  .section-title{font-size:18px;font-weight:800;margin:10px 4px;color:#31515b;display:flex;justify-content:space-between;align-items:center}.hint{font-size:13px;color:#6e858d;font-weight:600}
-  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.word{min-height:52px;font-size:18px;line-height:1.25;background:#fff;border:1px solid #dbe8ec;text-align:center}.phrase{grid-column:span 2;text-align:left;background:#fff;border-color:#dbe8ec}.fav{border:2px solid #94d6e2;background:#fff}
-  .add-panel{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #e6eef1;padding:8px 12px;box-shadow:none;z-index:20}.add-row{display:grid;grid-template-columns:1fr 110px;gap:8px}input,select{font-family:inherit;font-size:17px;border:1px solid #cfe0e5;border-radius:10px;padding:10px;background:#fff}.small-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.reset{font-size:14px;padding:9px;background:#fff;color:#59676b;border:1px solid #dbe8ec}
-  @media (min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phrase{grid-column:span 3}.screen{font-size:48px;min-height:330px}.tabs{top:465px}}
+  :root{--main:#0f8fa8;--main2:#0f6f82;--bg:#f7fbfc;--text:#14212b;--danger:#d94848;--line:#dbe8ec;--muted:#6e858d;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--text);}
+  body{height:100dvh;}
+  .app{height:100dvh;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom));gap:8px;}
+  .top{flex:0 0 45%;min-height:285px;display:flex;flex-direction:column;gap:8px;}
+  .title{display:flex;align-items:flex-end;gap:8px;min-height:35px;}
+  h1{font-size:25px;line-height:1;margin:0;color:var(--main2);letter-spacing:.03em;}
+  .sub{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:1px;}
+  .screen{flex:1;background:#fff;border:2px solid #d9eef3;border-radius:18px;padding:18px 16px;font-size:34px;line-height:1.35;font-weight:850;word-break:break-word;white-space:pre-wrap;overflow:hidden;display:flex;align-items:flex-start;}
+  .placeholder{color:#91a3aa;font-weight:650;font-size:26px;}
+  .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  button{font-family:inherit;border:1px solid var(--line);border-radius:14px;padding:12px 8px;font-size:18px;font-weight:850;background:#fff;color:var(--text);box-shadow:none;}
+  button:active{transform:scale(.985);opacity:.8;}
+  .light{color:var(--main2);background:#fff;}
+  .danger{color:var(--danger);border:2px solid #efb5b5;background:#fff;}
+  .bottom{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid #e6eef1;border-radius:18px;padding:8px;}
+  .tabbar{display:flex;gap:7px;overflow-x:auto;min-height:47px;padding-bottom:2px;scrollbar-width:none;}
+  .tabbar::-webkit-scrollbar{display:none;}
+  .tab{white-space:nowrap;padding:9px 12px;border-radius:999px;background:#fff;font-size:16px;color:var(--main2);}
+  .tab.active{background:var(--main);color:white;border-color:var(--main);}
+  .add-tab{margin-left:auto;border-style:dashed;color:var(--main2);min-width:70px;}
+  .info{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px;padding:0 3px;}
+  .cat-title{font-size:18px;font-weight:900;color:#31515b;}
+  .hint{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap;}
+  .grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start;overflow:hidden;}
+  .word{min-height:54px;font-size:18px;line-height:1.25;text-align:center;background:#fff;border:1px solid var(--line);}
+  .phrase{grid-column:span 2;text-align:left;min-height:56px;padding-left:14px;padding-right:14px;}
+  .fav{border:2px solid #94d6e2;}
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(20,33,43,.28);display:none;align-items:flex-end;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));}
+  .modal.show{display:flex;}
+  .panel{width:100%;background:#fff;border-radius:18px;padding:14px;box-shadow:0 16px 50px rgba(0,0,0,.18);}
+  .panel h2{font-size:19px;margin:0 0 10px;color:#31515b;}
+  input,select{width:100%;font-family:inherit;font-size:18px;border:1px solid #cfe0e5;border-radius:12px;padding:12px;background:#fff;margin-bottom:8px;}
+  .panel-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+  .primary{background:var(--main);color:#fff;border-color:var(--main);}
+  .reset{font-size:14px;color:#59676b;background:#fff;}
+  @media (max-height:720px){.top{flex-basis:43%;min-height:250px}.screen{font-size:30px;padding:14px}.word{min-height:48px;font-size:17px}.actions button{padding:10px 6px}.tabbar{min-height:42px}.tab{font-size:15px;padding:8px 10px}}
+  @media (min-width:700px){.app{max-width:760px;margin:0 auto}.screen{font-size:44px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phrase{grid-column:span 3}.top{flex-basis:46%}}
 </style>
 </head>
 <body>
-<header>
-  <h1>🦷 デンタルトーク</h1>
-  <div id="screen" class="screen"><span class="placeholder">ここに文章ができます</span></div>
-  <div class="actions">
-    <button class="light" onclick="addSpace()">空白</button>
-    <button class="light" onclick="undoText()">一つ戻す</button>
-    <button class="danger" onclick="clearText()">全部消す</button>
-  </div>
-</header>
-<main>
-  <div class="tabs" id="tabs"></div>
-  <div class="section-title"><span id="categoryTitle"></span><span class="hint">よく使う順に自動で上へ</span></div>
-  <div class="grid" id="wordGrid"></div>
-</main>
-<div class="add-panel">
-  <div class="add-row">
-    <input id="newWord" placeholder="単語・文章を追加" />
-    <button class="primary" onclick="addWord()">追加</button>
-  </div>
-  <div class="small-row">
+<div class="app">
+  <section class="top">
+    <div class="title"><h1>🦷 デンタルトーク</h1><div class="sub">歯科用・見せて伝える会話ボード</div></div>
+    <div id="screen" class="screen"><span class="placeholder">ここに文章ができます</span></div>
+    <div class="actions">
+      <button class="light" onclick="addSpace()">空白</button>
+      <button class="light" onclick="undoText()">一つ戻す</button>
+      <button class="danger" onclick="clearText()">全部消す</button>
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="tabbar" id="tabs"></div>
+    <div class="info"><span class="cat-title" id="categoryTitle"></span><span class="hint">よく使う順に上へ</span></div>
+    <div class="grid" id="wordGrid"></div>
+  </section>
+</div>
+
+<div class="modal" id="addModal" onclick="closeAdd(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <h2>単語・文章を追加</h2>
+    <input id="newWord" placeholder="例：少しお口を閉じてください" />
     <select id="newCategory"></select>
-    <button class="reset" onclick="resetCounts()">使用回数リセット</button>
+    <div class="panel-actions">
+      <button class="light" onclick="hideAdd()">閉じる</button>
+      <button class="primary" onclick="addWord()">追加</button>
+    </div>
+    <button class="reset" style="width:100%;margin-top:8px" onclick="resetCounts()">使用回数リセット</button>
   </div>
 </div>
+
 <script>
 const defaultData = {
   "よく使う": ["痛かったら手を上げてください", "うがいしてください", "口を開けてください", "もう少し開けてください", "大丈夫ですか？", "少し音がします", "水が出ます", "終わりました"],
@@ -69,7 +99,8 @@ function keyFor(cat, word){ return cat + '::' + word; }
 function renderTabs(){
   const tabs = document.getElementById('tabs'); tabs.innerHTML='';
   Object.keys(data).forEach(cat=>{ const b=document.createElement('button'); b.className='tab'+(cat===currentCategory?' active':''); b.textContent=cat; b.onclick=()=>{currentCategory=cat; render();}; tabs.appendChild(b); });
-  const sel=document.getElementById('newCategory'); sel.innerHTML=''; Object.keys(data).forEach(cat=>{const o=document.createElement('option'); o.value=cat; o.textContent=cat; sel.appendChild(o);});
+  const add=document.createElement('button'); add.className='tab add-tab'; add.textContent='＋追加'; add.onclick=showAdd; tabs.appendChild(add);
+  const sel=document.getElementById('newCategory'); sel.innerHTML=''; Object.keys(data).forEach(cat=>{const o=document.createElement('option'); o.value=cat; o.textContent=cat; sel.appendChild(o);}); sel.value=currentCategory;
 }
 function sortedWords(cat){ return [...data[cat]].sort((a,b)=> (counts[keyFor(cat,b)]||0) - (counts[keyFor(cat,a)]||0)); }
 function renderWords(){
@@ -79,7 +110,6 @@ function renderWords(){
 }
 function renderScreen(){ screen.textContent = textParts.length ? textParts.join('') : ''; if(!textParts.length){ screen.innerHTML = '<span class="placeholder">ここに文章ができます</span>'; } }
 function render(){ renderTabs(); renderWords(); renderScreen(); }
-
 function currentText(){ return textParts.join(''); }
 function isSentence(word){ return word.length >= 7 || /[。？！?!]$/.test(word) || /(ください|お願いします|します|ですか|です|ました|ます)$/.test(word); }
 function appendWord(word){
@@ -89,12 +119,13 @@ function appendWord(word){
   save(); render();
 }
 function addSpace(){ textParts.push('　'); renderScreen(); }
-
 function clearText(){ textParts=[]; renderScreen(); }
 function undoText(){ textParts.pop(); renderScreen(); }
-function addWord(){ const input=document.getElementById('newWord'); const word=input.value.trim(); const cat=document.getElementById('newCategory').value; if(!word) return; if(!data[cat].includes(word)) data[cat].push(word); input.value=''; save(); currentCategory=cat; render(); }
+function showAdd(){ document.getElementById('addModal').classList.add('show'); document.getElementById('newCategory').value=currentCategory; setTimeout(()=>document.getElementById('newWord').focus(),80); }
+function hideAdd(){ document.getElementById('addModal').classList.remove('show'); }
+function closeAdd(e){ if(e.target.id==='addModal') hideAdd(); }
+function addWord(){ const input=document.getElementById('newWord'); const word=input.value.trim(); const cat=document.getElementById('newCategory').value; if(!word) return; if(!data[cat].includes(word)) data[cat].push(word); input.value=''; save(); currentCategory=cat; hideAdd(); render(); }
 function resetCounts(){ if(confirm('使用回数をリセットしますか？')){ counts={}; save(); render(); } }
-async function copyText(){ const t=textParts.join(''); if(!t) return; try{ await navigator.clipboard.writeText(t); alert('コピーしました'); }catch(e){ alert('コピーできませんでした'); } }
 render();
 </script>
 </body>
