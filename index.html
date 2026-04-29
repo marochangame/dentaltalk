@@ -2,195 +2,30 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="デンタルトーク">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>デンタルトーク</title>
 <style>
-  :root{--main:#0f8fa8;--main2:#0f6f82;--bg:#f7fbfc;--text:#14212b;--danger:#d94848;--line:#dbe8ec;--muted:#6e858d;}
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;margin:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--text);}
-  body{height:100dvh;}
-  .app{height:100dvh;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom));gap:8px;}
-  .top{flex:0 0 52%;min-height:330px;display:flex;flex-direction:column;gap:6px;}
-  .title{display:flex;align-items:center;gap:10px;min-height:56px;}
-  .brand-mark{width:54px;height:54px;flex:0 0 auto;}
-  .brand-text{display:flex;flex-direction:column;gap:1px;min-width:0;}
-  .brand-name{font-size:27px;line-height:1.05;margin:0;color:var(--main2);font-weight:950;letter-spacing:.03em;}
-  .sub{font-size:12px;color:var(--muted);font-weight:800;line-height:1.2;}
-  .screen{flex:1;background:#fff;border:2px solid #d9eef3;border-radius:18px;padding:14px 16px;font-size:31px;line-height:1.22;font-weight:850;word-break:break-word;white-space:pre-wrap;overflow:hidden;display:block;}
-  .screen.compact{font-size:27px;line-height:1.16;}
-  .screen.tiny{font-size:23px;line-height:1.13;}
-  .placeholder{color:#91a3aa;font-weight:650;font-size:26px;}
-  .actions{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
-  button{font-family:inherit;border:1px solid var(--line);border-radius:14px;padding:12px 6px;font-size:17px;font-weight:850;background:#fff;color:var(--text);box-shadow:none;}
-  button:active{transform:scale(.985);opacity:.8;}
-  .light{color:var(--main2);background:#fff;}
-  .danger{color:var(--danger);border:2px solid #efb5b5;background:#fff;}
-  .bottom{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid #e6eef1;border-radius:18px;padding:8px;}
-  .tabbar{display:flex;gap:7px;overflow-x:auto;min-height:47px;padding-bottom:2px;scrollbar-width:none;}
-  .tabbar::-webkit-scrollbar{display:none;}
-  .tab{white-space:nowrap;padding:9px 12px;border-radius:999px;background:#fff;font-size:16px;color:var(--main2);}
-  .tab.active{background:var(--main);color:white;border-color:var(--main);}
-  .add-tab{margin-left:auto;border-style:dashed;color:var(--main2);min-width:70px;}
-  .info{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px;padding:0 3px;}
-  .cat-title{font-size:18px;font-weight:900;color:#31515b;}
-  .hint{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap;}
-  .grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start;overflow:hidden;}
-  .word{min-height:54px;font-size:18px;line-height:1.25;text-align:center;background:#fff;border:1px solid var(--line);}
-  .phrase{grid-column:span 2;text-align:left;min-height:56px;padding-left:14px;padding-right:14px;}
-  .fav{border:2px solid #94d6e2;}
-  .modal{position:fixed;inset:0;z-index:50;background:rgba(20,33,43,.28);display:none;align-items:flex-end;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom));}
-  .modal.show{display:flex;}
-  .panel{width:100%;background:#fff;border-radius:18px;padding:14px;box-shadow:0 16px 50px rgba(0,0,0,.18);}
-  .panel h2{font-size:19px;margin:0 0 10px;color:#31515b;}
-  input,select{width:100%;font-family:inherit;font-size:18px;border:1px solid #cfe0e5;border-radius:12px;padding:12px;background:#fff;margin-bottom:8px;}
-  .panel-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
-  .primary{background:var(--main);color:#fff;border-color:var(--main);}
-  .reset{font-size:14px;color:#59676b;background:#fff;}
-  .show-btn{background:var(--main);color:#fff;border-color:var(--main);}
-  .viewer{position:fixed;inset:0;z-index:100;background:#fff;display:none;align-items:center;justify-content:center;padding:26px;text-align:center;}
-  .viewer.show{display:flex;}
-  .viewer-text{font-size:clamp(38px,10vw,86px);line-height:1.35;font-weight:950;white-space:pre-wrap;word-break:break-word;color:var(--text);}
-  .viewer-hint{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#8aa0a8;font-size:14px;font-weight:700;}
-  @media (max-height:720px){.brand-mark{width:46px;height:46px}.brand-name{font-size:23px}.sub{font-size:11px}.title{min-height:48px}.top{flex-basis:50%;min-height:300px}.screen{font-size:29px;padding:12px}.screen.compact{font-size:25px}.screen.tiny{font-size:22px}.word{min-height:46px;font-size:16px}.actions button{padding:9px 6px}.tabbar{min-height:40px}.tab{font-size:14px;padding:7px 9px}.info{min-height:22px}.cat-title{font-size:16px}}
-  @media (min-width:700px){.app{max-width:760px;margin:0 auto}.screen{font-size:40px}.screen.compact{font-size:34px}.screen.tiny{font-size:29px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.phrase{grid-column:span 3}.top{flex-basis:52%}}
+:root{--main:#0f8fa8;--main2:#0f6f82;--bg:#f7fbfc;--line:#d9edf2;--text:#13212b;--muted:#7a8a93;--danger:#d75a5a}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}button,input,select{font:inherit}.app{height:100dvh;display:flex;flex-direction:column;padding:18px 18px max(18px,env(safe-area-inset-bottom));gap:10px}.title{display:flex;align-items:center;gap:12px;min-height:56px}.logo{width:58px;height:58px;flex:0 0 auto}.brand-name{font-weight:900;color:var(--main2);font-size:31px;line-height:1}.sub{font-weight:800;color:#6d7d85;font-size:14px;margin-top:5px}.screen{flex:0 0 34%;min-height:220px;background:#fff;border:2px solid var(--line);border-radius:24px;padding:26px 24px;display:flex;align-items:flex-start;justify-content:flex-start;overflow:auto;white-space:pre-wrap;font-size:31px;line-height:1.35;font-weight:900;color:#12202a}.placeholder{color:#91a3aa}.actions{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px}.btn{border:1.5px solid #d9e5e9;background:#fff;border-radius:18px;padding:14px 10px;font-weight:900;color:var(--main2);min-height:54px}.btn.primary{background:var(--main);color:#fff;border-color:var(--main)}.btn.danger{color:var(--danger);border:2px solid #e9b8b8;background:#fff}.btn:active{transform:scale(.985);opacity:.85}.bottom{flex:1;min-height:0;background:#fff;border:1.5px solid #dbe9ed;border-radius:22px;padding:14px 14px 10px;display:flex;flex-direction:column;overflow:hidden}.tabs{display:flex;gap:9px;overflow-x:auto;padding-bottom:8px;flex:0 0 auto}.tab{white-space:nowrap;border:1.5px solid #d9e5e9;background:#fff;border-radius:999px;padding:10px 15px;font-weight:900;color:var(--main2)}.tab.active{background:var(--main);color:#fff;border-color:var(--main)}.add-tab{border-style:dashed}.rowhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;margin:0 2px 8px}.cat-title{font-size:24px;font-weight:900;color:#274650}.hint{font-size:13px;font-weight:800;color:#7b8c93}.phrases{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:10px}.phrase{border:1.5px solid #d9e5e9;background:#fff;border-radius:18px;padding:16px 14px;min-height:62px;font-size:21px;font-weight:900;color:#12202a;text-align:left;display:flex;align-items:center;justify-content:center;line-height:1.2}.phrase.wide{grid-column:1 / -1}.phrase.hot{border:2px solid #9ad3de}.modal,.show{position:fixed;inset:0;background:rgba(10,25,32,.25);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.on,.show.on{display:flex}.dialog{width:min(520px,100%);background:#fff;border-radius:24px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.18)}.dialog h2{margin:0 0 14px;font-size:24px}.field{width:100%;border:2px solid #d7e6ea;border-radius:14px;padding:14px;font-size:20px;font-weight:800;margin-bottom:12px}.select{width:100%;border:2px solid #d7e6ea;border-radius:14px;padding:14px;background:#fff;font-weight:800;margin-bottom:14px}.dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.show{background:#fff;color:var(--text);z-index:20;flex-direction:column;text-align:center}.showText{font-size:44px;line-height:1.35;font-weight:900;white-space:pre-wrap;max-width:92%;word-break:break-word}.showHint{position:absolute;bottom:42px;color:#9aa8ad;font-weight:900}@media (max-height:740px){.app{gap:8px;padding-top:10px}.title{min-height:44px}.logo{width:48px;height:48px}.brand-name{font-size:27px}.sub{font-size:12px}.screen{flex-basis:31%;min-height:190px;font-size:28px;padding:22px}.btn{min-height:48px;padding:11px 8px}.bottom{padding:12px}.phrase{min-height:56px;font-size:19px;padding:13px}}
 </style>
 </head>
 <body>
 <div class="app">
-  <section class="top">
-    <div class="title">
-      <svg class="brand-mark" viewBox="0 0 120 120" role="img" aria-label="デンタルトーク ロゴ">
-        <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#0f8fa8"/><stop offset="1" stop-color="#0f6f82"/></linearGradient></defs>
-        <path d="M18 27c0-12 10-21 23-21h38c13 0 23 9 23 21v31c0 12-10 21-23 21H51L22 100c-4 3-9-2-7-7l7-17c-3-4-4-9-4-18V27z" fill="url(#g)"/>
-        <path d="M46 25c6 0 9 4 14 4s8-4 14-4c10 0 17 8 16 19-1 10-6 18-8 30-2 9-6 17-13 17-7 0-6-12-9-12s-2 12-9 12c-7 0-11-8-13-17-2-12-7-20-8-30-1-11 6-19 16-19z" fill="#fff"/>
-        <circle cx="50" cy="50" r="4" fill="#0f6f82"/><circle cx="70" cy="50" r="4" fill="#0f6f82"/>
-        <path d="M52 63c4 5 12 5 16 0" fill="none" stroke="#0f6f82" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="43" cy="60" r="6" fill="#ffc9bd" opacity=".8"/><circle cx="77" cy="60" r="6" fill="#ffc9bd" opacity=".8"/>
-      </svg>
-      <div class="brand-text"><div class="brand-name">デンタルトーク</div><div class="sub">歯科用・見せて伝える会話ボード</div></div>
-    </div>
-    <div id="screen" class="screen"><span class="placeholder">ここに文章ができます</span></div>
-    <div class="actions">
-      <button class="show-btn" onclick="showViewer()">見せる</button>
-      <button class="light" onclick="addSpace()">空白</button>
-      <button class="light" onclick="undoText()">一つ戻す</button>
-      <button class="danger" onclick="clearText()">全部消す</button>
-    </div>
-  </section>
-
-  <section class="bottom">
-    <div class="tabbar" id="tabs"></div>
-    <div class="info"><span class="cat-title" id="categoryTitle"></span><span class="hint">よく使う順・長押しで削除</span></div>
-    <div class="grid" id="wordGrid"></div>
-  </section>
+<header class="title"><svg class="logo" viewBox="0 0 128 128"><rect x="8" y="8" width="112" height="112" rx="28" fill="#0f8fa8"/><path d="M30 38c0-12 10-21 23-17 5 1 8 4 11 4s6-3 11-4c13-4 23 5 23 17 0 10-4 18-8 28-4 11-5 30-17 30-8 0-8-16-9-23-1-4-7-4-8 0-1 7-1 23-9 23-12 0-13-19-17-30-4-10-8-18-8-28z" fill="#fff"/><circle cx="49" cy="50" r="4" fill="#0f8fa8"/><circle cx="79" cy="50" r="4" fill="#0f8fa8"/><path d="M53 64c6 7 16 7 22 0" fill="none" stroke="#0f8fa8" stroke-width="5" stroke-linecap="round"/><path d="M19 96l18-10 17 9" fill="none" stroke="#0f8fa8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg><div><div class="brand-name">デンタルトーク</div><div class="sub">歯科用・見せて伝える会話ボード</div></div></header>
+<main id="screen" class="screen placeholder">ここに文章ができます</main>
+<section class="actions"><button class="btn primary" id="showBtn">見せる</button><button class="btn" id="spaceBtn">空白</button><button class="btn" id="undoBtn">一つ戻す</button><button class="btn danger" id="clearBtn">全部消す</button></section>
+<section class="bottom"><div class="tabs" id="tabs"></div><div class="rowhead"><div class="cat-title" id="catTitle">よく使う</div><div class="hint">よく使う順・長押しで削除</div></div><div class="phrases" id="phrases"></div></section>
 </div>
-
-<div class="viewer" id="viewer" onclick="hideViewer()">
-  <div class="viewer-text" id="viewerText"></div>
-  <div class="viewer-hint">タップで戻る</div>
-</div>
-
-<div class="modal" id="addModal" onclick="closeAdd(event)">
-  <div class="panel" onclick="event.stopPropagation()">
-    <h2>単語・文章を追加</h2>
-    <input id="newWord" placeholder="例：少しお口を閉じてください" />
-    <select id="newCategory"></select>
-    <div class="panel-actions">
-      <button class="light" onclick="hideAdd()">閉じる</button>
-      <button class="primary" onclick="addWord()">追加</button>
-    </div>
-    <button class="reset" style="width:100%;margin-top:8px" onclick="resetCounts()">使用回数リセット</button>
-  </div>
-</div>
-
+<div class="modal" id="addModal"><div class="dialog"><h2>単語・文章を追加</h2><input class="field" id="newText" placeholder="追加したい文字を入力" autocomplete="off"><select class="select" id="newCategory"></select><div class="dialog-actions"><button class="btn" id="closeAdd">閉じる</button><button class="btn primary" id="saveAdd">追加</button></div></div></div>
+<div class="show" id="showMode"><div class="showText" id="showText"></div><div class="showHint">タップで戻る</div></div>
 <script>
-const defaultData = {
-  "よく使う": ["痛かったら手を上げてください", "うがいしてください", "口を開けてください", "もう少し開けてください", "大丈夫ですか？", "少し音がします", "水が出ます", "終わりました"],
-  "あいさつ": ["こんにちは", "お名前を教えてください", "今日はどうされましたか？", "よろしくお願いします", "お疲れさまでした"],
-  "症状": ["痛い", "少し痛い", "しみる", "腫れている", "出血がある", "違和感がある", "いつからですか？"],
-  "部位": ["上", "下", "右", "左", "前歯", "奥歯", "ここ", "この歯", "右上", "右下", "左上", "左下"],
-  "確認": ["痛いですか？", "しみますか？", "どのくらい痛いですか？", "気分は悪くないですか？", "苦しくないですか？"],
-  "指示": ["閉じてください", "楽にしてください", "鼻で呼吸してください", "力を抜いてください", "そのままでお願いします", "少し待ってください"],
-  "処置": ["レントゲンを撮ります", "麻酔をします", "少しチクッとします", "削ります", "クリーニングします", "お薬を塗ります", "型取りをします"],
-  "終了": ["今日はここまでです", "次回の予約を取ります", "受付でお待ちください", "お大事にしてください"]
-};
-let data = JSON.parse(localStorage.getItem('dt_words_v2') || 'null') || defaultData;
-let counts = JSON.parse(localStorage.getItem('dt_counts_v1') || '{}');
-let textParts = [];
-let currentCategory = Object.keys(data)[0];
-const screen = document.getElementById('screen');
-function save(){ localStorage.setItem('dt_words_v2', JSON.stringify(data)); localStorage.setItem('dt_counts_v1', JSON.stringify(counts)); }
-function keyFor(cat, word){ return cat + '::' + word; }
-function renderTabs(){
-  const tabs = document.getElementById('tabs'); tabs.innerHTML='';
-  Object.keys(data).forEach(cat=>{ const b=document.createElement('button'); b.className='tab'+(cat===currentCategory?' active':''); b.textContent=cat; b.onclick=()=>{currentCategory=cat; render();}; tabs.appendChild(b); });
-  const add=document.createElement('button'); add.className='tab add-tab'; add.textContent='＋追加'; add.onclick=showAdd; tabs.appendChild(add);
-  const sel=document.getElementById('newCategory'); sel.innerHTML=''; Object.keys(data).forEach(cat=>{const o=document.createElement('option'); o.value=cat; o.textContent=cat; sel.appendChild(o);}); sel.value=currentCategory;
-}
-function sortedWords(cat){ return [...data[cat]].sort((a,b)=> (counts[keyFor(cat,b)]||0) - (counts[keyFor(cat,a)]||0)); }
-function renderWords(){
-  document.getElementById('categoryTitle').textContent = currentCategory;
-  const grid=document.getElementById('wordGrid'); grid.innerHTML='';
-  sortedWords(currentCategory).forEach(word=>{
-    const b=document.createElement('button');
-    const c=counts[keyFor(currentCategory,word)]||0;
-    b.className='word'+(c>=3?' fav':'')+(word.length>9?' phrase':'');
-    b.textContent=word;
-    let timer=null;
-    let longPressed=false;
-    const start=()=>{ longPressed=false; timer=setTimeout(()=>{ longPressed=true; deleteWord(word); },700); };
-    const cancel=()=>{ if(timer){ clearTimeout(timer); timer=null; } };
-    b.addEventListener('touchstart', start, {passive:true});
-    b.addEventListener('touchend', cancel);
-    b.addEventListener('touchmove', cancel);
-    b.addEventListener('mousedown', start);
-    b.addEventListener('mouseup', cancel);
-    b.addEventListener('mouseleave', cancel);
-    b.onclick=()=>{ if(longPressed){ longPressed=false; return; } appendWord(word); };
-    grid.appendChild(b);
-  });
-}
-function deleteWord(word){
-  if(!confirm('「'+word+'」を削除しますか？')) return;
-  data[currentCategory] = data[currentCategory].filter(w => w !== word);
-  delete counts[keyFor(currentCategory,word)];
-  save();
-  render();
-}
-function renderScreen(){
-  screen.classList.remove('compact','tiny');
-  const txt = textParts.length ? textParts.join('') : '';
-  screen.textContent = txt;
-  if(!textParts.length){ screen.innerHTML = '<span class="placeholder">ここに文章ができます</span>'; return; }
-  const lines = txt.split('\n').length;
-  if(lines >= 5 || txt.length > 52) screen.classList.add('tiny');
-  else if(lines >= 4 || txt.length > 38) screen.classList.add('compact');
-}
-function render(){ renderTabs(); renderWords(); renderScreen(); }
-function currentText(){ return textParts.join(''); }
-function isSentence(word){ return word.length >= 7 || /[。？！?!]$/.test(word) || /(ください|お願いします|します|ですか|です|ました|ます)$/.test(word); }
-function appendWord(word){
-  if(textParts.length && isSentence(word) && !currentText().endsWith('\n')) textParts.push('\n');
-  textParts.push(word);
-  const k=keyFor(currentCategory,word); counts[k]=(counts[k]||0)+1;
-  save(); render();
-}
-function addSpace(){ textParts.push('　'); renderScreen(); }
-function clearText(){ textParts=[]; renderScreen(); }
-function undoText(){ textParts.pop(); renderScreen(); }
-function showAdd(){ document.getElementById('addModal').classList.add('show'); document.getElementById('newCategory').value=currentCategory; setTimeout(()=>document.getElementById('newWord').focus(),80); }
-function hideAdd(){ document.getElementById('addModal').classList.remove('show'); }
-function closeAdd(e){ if(e.target.id==='addModal') hideAdd(); }
-function addWord(){ const input=document.getElementById('newWord'); const word=input.value.trim(); const cat=document.getElementById('newCategory').value; if(!word) return; if(!data[cat].includes(word)) data[cat].push(word); input.value=''; save(); currentCategory=cat; hideAdd(); render(); }
-function resetCounts(){ if(confirm('使用回数をリセットしますか？')){ counts={}; save(); render(); } }
-function showViewer(){
-  const txt = currentText().trim();
-  if(!txt) return;
-  document.getElementById('viewerText').textContent = txt;
-  document.getElementById('viewer').classList.add('show');
-}
-function hideViewer(){ document.getElementById('viewer').classList.remove('show'); }
-render();
+const LS_CUSTOM='dentaltalk_custom_v3',LS_COUNTS='dentaltalk_counts_v3',LS_HIDDEN='dentaltalk_hidden_v3';
+const categories=[{id:'fav',name:'よく使う'},{id:'greeting',name:'あいさつ'},{id:'symptom',name:'症状'},{id:'part',name:'部位'},{id:'check',name:'確認'},{id:'instruction',name:'指示'},{id:'treatment',name:'処置'},{id:'end',name:'終了'}];
+const defaults=[['痛かったら手を上げてください','fav'],['うがいしてください','fav'],['大丈夫ですか？','fav'],['口を開けてください','fav'],['水が出ます','fav'],['少し音がします','fav'],['終わりました','fav'],['こんにちは','greeting'],['よろしくお願いします','greeting'],['今日はどうされましたか？','greeting'],['お名前を教えてください','greeting'],['痛い','symptom'],['少し痛い','symptom'],['しみる','symptom'],['腫れている','symptom'],['出血があります','symptom'],['違和感があります','symptom'],['上','part'],['下','part'],['右','part'],['左','part'],['前歯','part'],['奥歯','part'],['この歯','part'],['ここ','part'],['痛いですか？','check'],['しみますか？','check'],['大丈夫ですか？','check'],['いつからですか？','check'],['もう少し開けてください','instruction'],['閉じてください','instruction'],['力を抜いてください','instruction'],['鼻で呼吸してください','instruction'],['楽にしてください','instruction'],['レントゲンを撮ります','treatment'],['麻酔をします','treatment'],['少しチクッとします','treatment'],['クリーニングします','treatment'],['お薬を塗ります','treatment'],['今日はここまでです','end'],['次回の予約を取ります','end'],['受付でお待ちください','end'],['お大事にしてください','end']].map((x,i)=>({id:'d'+i,text:x[0],cat:x[1],builtin:true}));
+let custom=load(LS_CUSTOM,[]),counts=load(LS_COUNTS,{}),hidden=load(LS_HIDDEN,[]),tokens=[],current='fav',pressTimer=null;
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}}function save(k,v){localStorage.setItem(k,JSON.stringify(v))}function allItems(){return defaults.concat(custom).filter(x=>!hidden.includes(x.id))}function text(){return tokens.join('')}function updateScreen(){const s=document.getElementById('screen');if(tokens.length===0){s.textContent='ここに文章ができます';s.classList.add('placeholder')}else{s.textContent=text();s.classList.remove('placeholder')}}function addToken(t){if(tokens.length>0&&!text().endsWith('\n')&&!text().endsWith(' ')&&t!==' ')tokens.push('\n');tokens.push(t);counts[t]=(counts[t]||0)+1;save(LS_COUNTS,counts);updateScreen();render()}function renderTabs(){const tabs=document.getElementById('tabs');tabs.innerHTML='';categories.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c.id===current?' active':'');b.textContent=c.name;b.onclick=()=>{current=c.id;render()};tabs.appendChild(b)});const add=document.createElement('button');add.className='tab add-tab';add.textContent='＋追加';add.onclick=openAdd;tabs.appendChild(add)}function render(){renderTabs();document.getElementById('catTitle').textContent=categories.find(c=>c.id===current)?.name||'';let items=allItems();if(current==='fav'){items=items.filter(x=>x.cat==='fav'||counts[x.text]>0).sort((a,b)=>(counts[b.text]||0)-(counts[a.text]||0)||a.text.length-b.text.length)}else{items=items.filter(x=>x.cat===current).sort((a,b)=>(counts[b.text]||0)-(counts[a.text]||0))}const box=document.getElementById('phrases');box.innerHTML='';items.forEach((item,idx)=>{const b=document.createElement('button');b.className='phrase '+(item.text.length>13?'wide':'')+(idx<3&&current==='fav'?' hot':'');b.textContent=item.text;b.onclick=()=>addToken(item.text);b.addEventListener('touchstart',()=>startDelete(item),{passive:true});b.addEventListener('touchend',cancelDelete);b.addEventListener('touchmove',cancelDelete);b.addEventListener('mousedown',()=>startDelete(item));b.addEventListener('mouseup',cancelDelete);b.addEventListener('mouseleave',cancelDelete);box.appendChild(b)})}function startDelete(item){cancelDelete();pressTimer=setTimeout(()=>{if(confirm('「'+item.text+'」を削除しますか？')){if(item.builtin){hidden.push(item.id);save(LS_HIDDEN,hidden)}else{custom=custom.filter(x=>x.id!==item.id);save(LS_CUSTOM,custom)}render()}},650)}function cancelDelete(){if(pressTimer){clearTimeout(pressTimer);pressTimer=null}}function openAdd(){document.getElementById('newText').value='';document.getElementById('newCategory').innerHTML=categories.filter(c=>c.id!=='fav').map(c=>`<option value="${c.id}" ${c.id===current?'selected':''}>${c.name}</option>`).join('');document.getElementById('addModal').classList.add('on');setTimeout(()=>document.getElementById('newText').focus(),100)}function closeAdd(){document.getElementById('addModal').classList.remove('on')}function saveAdd(){const input=document.getElementById('newText');const val=input.value.trim();if(!val){input.focus();return}const cat=document.getElementById('newCategory').value||'fav';custom.push({id:'c'+Date.now(),text:val,cat,builtin:false});save(LS_CUSTOM,custom);current=cat;closeAdd();render()}document.getElementById('spaceBtn').onclick=()=>{tokens.push(' ');updateScreen()};document.getElementById('undoBtn').onclick=()=>{tokens.pop();updateScreen()};document.getElementById('clearBtn').onclick=()=>{tokens=[];updateScreen()};document.getElementById('showBtn').onclick=()=>{const t=text().trim();if(!t)return;document.getElementById('showText').textContent=t;document.getElementById('showMode').classList.add('on')};document.getElementById('showMode').onclick=()=>document.getElementById('showMode').classList.remove('on');document.getElementById('closeAdd').onclick=closeAdd;document.getElementById('saveAdd').onclick=saveAdd;document.getElementById('newText').addEventListener('keydown',e=>{if(e.key==='Enter')saveAdd()});document.getElementById('addModal').addEventListener('click',e=>{if(e.target.id==='addModal')closeAdd()});updateScreen();render();
 </script>
 </body>
 </html>
